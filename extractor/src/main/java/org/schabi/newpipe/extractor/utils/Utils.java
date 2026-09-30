@@ -86,17 +86,21 @@ public final class Utils {
             throws NumberFormatException, ParsingException {
         String multiplier = "";
         try {
-            multiplier = Parser.matchGroup("[\\d]+([\\.,][\\d]+)?([KMBkmb])+", numberWord, 2);
+            multiplier = Parser.matchGroup(
+                    "[\\d]+([\\.,][\\d]+)?\\p{Zs}*([KMBkmb]|Tr|TR|T|N)", numberWord, 2);
         } catch (final ParsingException ignored) {
         }
         final double count = Double.parseDouble(
                 Parser.matchGroup1("([\\d]+([\\.,][\\d]+)?)", numberWord).replace(",", "."));
         switch (multiplier.toUpperCase()) {
             case "K":
+            case "N": // Vietnamese "nghìn"
                 return (long) (count * 1e3);
             case "M":
+            case "TR": // Vietnamese "triệu"
                 return (long) (count * 1e6);
             case "B":
+            case "T": // Vietnamese "tỷ"
                 return (long) (count * 1e9);
             default:
                 return (long) (count);
